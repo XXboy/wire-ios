@@ -41,8 +41,9 @@ class CannotDecryptCell: IconSystemCell {
             let labelBoldFont = labelBoldFont,
             let labelFont = labelFont,
             let labelTextColor = labelTextColor,
-            let sender = message.sender
-            , acceptedTypes.contains(systemMessageData.systemMessageType)
+            let sender = message.sender,
+            let labelTextBlendedColor = labelTextBlendedColor,
+            acceptedTypes.contains(systemMessageData.systemMessageType)
         else { return }
         
         let remoteIDChanged = systemMessageData.systemMessageType == .decryptionFailed_RemoteIdentityChanged
@@ -51,9 +52,9 @@ class CannotDecryptCell: IconSystemCell {
         let linkAttributes = [NSFontAttributeName: labelFont, NSLinkAttributeName: link as AnyObject] as [String : AnyObject]
         let name = localizedWhoPart(sender, remoteIDChanged: remoteIDChanged).uppercased()
         let why = localizedWhyPart(remoteIDChanged).uppercased() && labelFont && labelTextColor && linkAttributes
-        let device = localizedDevice(systemMessageData.clients.first as? UserClient) && labelFont && labelTextColor
+        let device = localizedDevice(systemMessageData.clients.first as? UserClient).uppercased() && labelFont && labelTextBlendedColor
         let messageString = localizedWhatPart(remoteIDChanged, name: name).uppercased() && labelFont && labelTextColor
-        let fullString = messageString + " " + why + " " + device
+        let fullString = messageString + " " + why + "\n" + device
         
         labelView.attributedText = fullString.addAttributes([ NSFontAttributeName: labelBoldFont], toSubstring:name)
         labelView.addLink(to: link, with: NSMakeRange(messageString.length+1, why.length))

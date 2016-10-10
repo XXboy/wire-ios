@@ -51,8 +51,9 @@ class CannotDecryptCell: IconSystemCell {
         let linkAttributes = [NSFontAttributeName: labelFont, NSLinkAttributeName: link as AnyObject] as [String : AnyObject]
         let name = localizedWhoPart(sender, remoteIDChanged: remoteIDChanged).uppercased()
         let why = localizedWhyPart(remoteIDChanged).uppercased() && labelFont && labelTextColor && linkAttributes
+        let device = localizedDevice(systemMessageData.clients.first as? UserClient) && labelFont && labelTextColor
         let messageString = localizedWhatPart(remoteIDChanged, name: name).uppercased() && labelFont && labelTextColor
-        let fullString = messageString + " " + why
+        let fullString = messageString + " " + why + " " + device
         
         labelView.attributedText = fullString.addAttributes([ NSFontAttributeName: labelBoldFont], toSubstring:name)
         labelView.addLink(to: link, with: NSMakeRange(messageString.length+1, why.length))
@@ -76,6 +77,10 @@ class CannotDecryptCell: IconSystemCell {
     
     func localizedWhyPart(_ remoteIDChanged: Bool) -> String {
         return (BaseLocalizationString+(remoteIDChanged ? IdentityString : "")+".why_part").localized
+    }
+    
+    func localizedDevice(_ device: UserClient?) -> String {
+        return (BaseLocalizationString+".otherDevice_part").localized(args: device?.remoteIdentifier ?? "-")
     }
     
     func attributedLabel(_ label: TTTAttributedLabel!, didSelectLinkWithURL URL: Foundation.URL!) {
